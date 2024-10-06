@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.flow.update
 import com.example.unscramble.data.SCORE_INCREASE
+import com.example.unscramble.data.MAX_NO_OF_WORDS
 
 
 
@@ -55,13 +56,24 @@ class GameViewModel:ViewModel() {
     }
 
     private fun updateGameState(updatedScore: Int) {
-        _uiState.update { currentState ->
-            currentState.copy(
-                isGuessedWordWrong = false,
-                currentScrambledWord = pickRandomWordAndShuffle(),
-                score = updatedScore,
-                currentWordCount = currentState.currentWordCount.inc(),
-            )
+        // Better to use greater than and equal here, always better practice.
+        if (usedWords.size >= MAX_NO_OF_WORDS){
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isGuessedWordWrong = false,
+                    score = updatedScore,
+                    isGameOver = true,
+                )
+            }
+        }else{
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isGuessedWordWrong = false,
+                    currentScrambledWord = pickRandomWordAndShuffle(),
+                    score = updatedScore,
+                    currentWordCount = currentState.currentWordCount.inc(),
+                )
+            }
         }
     }
 
@@ -90,5 +102,7 @@ class GameViewModel:ViewModel() {
 
     init {
         resetGame()
+        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle())
+
     }
 }
