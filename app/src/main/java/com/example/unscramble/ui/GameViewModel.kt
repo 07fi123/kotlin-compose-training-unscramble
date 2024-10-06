@@ -22,7 +22,6 @@ class GameViewModel:ViewModel() {
     // Set of words used in the game
     private var usedWords: MutableSet<String> = mutableSetOf()
 
-
     var userGuess by mutableStateOf("")
         private set
 
@@ -57,7 +56,7 @@ class GameViewModel:ViewModel() {
 
     private fun updateGameState(updatedScore: Int) {
         // Better to use greater than and equal here, always better practice.
-        if (usedWords.size >= MAX_NO_OF_WORDS){
+        if (usedWords.size == MAX_NO_OF_WORDS){
             _uiState.update { currentState ->
                 currentState.copy(
                     isGuessedWordWrong = false,
